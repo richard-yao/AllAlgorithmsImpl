@@ -468,5 +468,16 @@ public class DoubleSideLinkedList<E> implements Serializable {
 	private boolean isElementIndex(int index) {
 		return index >= 0 && index < size;
 	}
+	
+	public static void main(String[] args) {
+		DoubleSideLinkedList<String> list = new DoubleSideLinkedList<String>();
+		list.add("123");
+		list.add("abc");
+		list.add(0, "456");
+		for(int i=0;i<list.getSize();i++) {
+			System.out.println(list.get(i));
+		}
+		System.out.println(list.indexOf("abc"));
+	}
 
 }
