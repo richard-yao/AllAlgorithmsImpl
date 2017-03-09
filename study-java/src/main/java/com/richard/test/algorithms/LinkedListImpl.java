@@ -1,4 +1,4 @@
-package com.richard.test;
+package com.richard.test.algorithms;
 
 /**
  * @author YaoXiansheng

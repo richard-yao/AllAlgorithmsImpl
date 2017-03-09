@@ -1,4 +1,4 @@
-package com.richard.test;
+package com.richard.test.algorithms;
 
 import java.io.Serializable;
 import java.util.NoSuchElementException;
