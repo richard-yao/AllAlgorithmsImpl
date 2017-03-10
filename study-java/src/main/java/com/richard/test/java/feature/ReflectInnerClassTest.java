@@ -33,7 +33,7 @@ public class ReflectInnerClassTest {
 			}
 		}
 		
-		//由于匿名内部类没有构建器，因此无法创建实例，也无法直接访问其中的方法，但可以通过下面的方式巧秒的执行其中的方法或成员变量
+		//由于匿名内部类没有构建器，因此无法创建实例，也无法直接访问其中的方法，但可以通过下面的方式巧妙的执行其中的方法或成员变量
 		Runnable runnable = (Runnable) clazz.getField("runnable").get(ric);
 		runnable.run();
 	}
