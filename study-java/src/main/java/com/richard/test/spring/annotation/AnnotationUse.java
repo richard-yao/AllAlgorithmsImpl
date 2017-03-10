@@ -27,7 +27,7 @@ public class AnnotationUse {
 	
 	/**
 	 * @author RichardYao
-	 * applicationContext.getBean(Class ...)无法实例化非静态内部类
+	 * applicationContext.getBean(Class ...)只能实例化静态内部类
 	 */
 	@MyComponent
 	public static class InjectClass {
