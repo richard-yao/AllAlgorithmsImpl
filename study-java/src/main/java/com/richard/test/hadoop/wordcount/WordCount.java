@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
 
+import com.richard.test.hadoop.kpi.browser.BrowserMR;
 import com.richard.test.hadoop.util.BaseDriver;
 import com.richard.test.hadoop.util.JobInitModel;
 
@@ -21,7 +22,9 @@ import com.richard.test.hadoop.util.JobInitModel;
 public class WordCount {
 	
 	public static void main(String[] args) throws Exception {
-		wordcountMR(args);
+		BrowserMR mr = new BrowserMR();
+		mr.submitJob(args);
+		//wordcountMR(args);
 		//wordcountJar(args);
 	}
 	
