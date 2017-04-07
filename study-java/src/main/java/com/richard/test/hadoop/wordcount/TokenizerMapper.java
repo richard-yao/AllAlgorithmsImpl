@@ -1,4 +1,4 @@
-package com.richard.test.hadoop;
+package com.richard.test.hadoop.wordcount;
 
 import java.io.IOException;
 import java.util.StringTokenizer;

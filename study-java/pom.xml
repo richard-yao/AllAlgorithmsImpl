@@ -167,7 +167,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.richard.test.hadoop.WordCount</mainClass>
+							<mainClass>com.richard.test.hadoop.wordcount.WordCount</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
