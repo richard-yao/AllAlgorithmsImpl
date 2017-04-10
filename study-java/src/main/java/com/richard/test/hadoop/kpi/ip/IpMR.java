@@ -20,7 +20,7 @@ import com.richard.test.hadoop.util.DBOutputWritable;
 public class IpMR {
 
 	public void submitJob(String[] args) throws Exception {
-		String input = "hdfs://localhost:9000/user/hadoop/accesslog/*";
+		String input = "hdfs://hadoop-master:9000/user/hadoop/accesslog/*";
 		Configuration conf = new Configuration();
 		DBConfiguration.configureDB(conf, "com.mysql.jdbc.Driver", "jdbc:mysql://10.12.22.78:3306/statistic_data", "root", "tvu1p2ack3");
 

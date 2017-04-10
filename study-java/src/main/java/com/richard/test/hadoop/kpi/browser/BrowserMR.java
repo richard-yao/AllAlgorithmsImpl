@@ -24,8 +24,8 @@ public class BrowserMR {
 			input = new String[]{args[0]};
 			output = args[1];
 		} else {
-			input = new String[]{"hdfs://localhost:9000/user/hadoop/accesslog/*"};
-			output = "hdfs://localhost:9000/user/hadoop/accesslog-out/kpi/browser";
+			input = new String[]{"hdfs://hadoop-master:9000/user/hadoop/accesslog/*"};
+			output = "hdfs://hadoop-master:9000/user/hadoop/accesslog-out/kpi/browser";
 		}
 		Configuration conf = new Configuration();
 		String jobName = "kpi-browser-statistic";

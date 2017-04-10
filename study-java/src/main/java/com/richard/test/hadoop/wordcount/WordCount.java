@@ -23,8 +23,10 @@ import com.richard.test.hadoop.util.JobInitModel;
 public class WordCount {
 	
 	public static void main(String[] args) throws Exception {
-		/*BrowserMR mr = new BrowserMR();
-		mr.submitJob(new String[0]);*/
+		if(args.length > 0) {
+			BrowserMR mr = new BrowserMR();
+			mr.submitJob(args);
+		}
 		IpMR ipMR = new IpMR();
 		ipMR.submitJob(args);
 		//wordcountMR(args);
