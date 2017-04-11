@@ -29,6 +29,7 @@ public class WordCount {
 		}
 		IpMR ipMR = new IpMR();
 		ipMR.submitJob(args);
+		//ipMR.submitJobWithDefinedMysqlOutput(args);
 		//wordcountMR(args);
 		//wordcountJar(args);
 	}
