@@ -25,7 +25,7 @@ import com.richard.test.hadoop.util.WriteFileToHdfs;
 public class WordCount {
 	
 	public static void main(String[] args) throws Exception {
-		WriteFileToHdfs.mainExecute(args);
+		//WriteFileToHdfs.mainExecute(args);
 		if(args.length == 2) {
 			BrowserMR mr = new BrowserMR();
 			mr.submitJob(args);

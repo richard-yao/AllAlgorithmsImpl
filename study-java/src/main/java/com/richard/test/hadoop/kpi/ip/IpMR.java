@@ -2,6 +2,7 @@ package com.richard.test.hadoop.kpi.ip;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
@@ -21,10 +22,15 @@ import com.richard.test.hadoop.util.MysqlOutputFormat;
  * @date Apr 7, 2017 6:01:09 PM
  */
 public class IpMR extends Configured implements Tool {
-
+	
+	public final static Configuration configuration = new Configuration();
+	public final static String configPath = "/user/hadoop/config/config.properties";
+	
 	public int submitJob(String[] args) throws Exception {
 		String input = "hdfs://hadoop-master:9000/user/hadoop/accesslog/*";
 		Configuration conf = new Configuration();
+		conf.setInt("mapreduce.tasktracker.map.tasks.maximum", 10);
+		conf.setInt("mapreduce.tasktracker.reduce.tasks.maximum", 10);
 		DBConfiguration.configureDB(conf, "com.mysql.jdbc.Driver", "jdbc:mysql://10.12.22.78:3306/statistic_data", "root", "tvu1p2ack3");
 
 		Job job = Job.getInstance(conf, "statistic-ip-into-db");
@@ -44,14 +50,22 @@ public class IpMR extends Configured implements Tool {
 	}
 	
 	/**
-	 * 此方法不可用，因为MapReducer程序无法读取本地系统中的配置文件，导致数据库连接没法进行
+	 * 使用自定义的MysqlOutputFormat配合c3p0连接池将数据写入数据库中
 	 * @param args
 	 * @throws Exception
 	 */
 	public int submitJobWithDefinedMysqlOutput(String[] args) throws Exception {
+		Configuration conf = IpMR.configuration;
+		/*conf.setInt("mapreduce.tasktracker.map.tasks.maximum", 20);
+		conf.setInt("mapreduce.tasktracker.reduce.tasks.maximum", 50);*/
+		
 		String input = "hdfs://hadoop-master:9000/user/hadoop/accesslog/*";
 		String output = "hdfs://hadoop-master:9000/user/hadoop/accesslog/output";
-		Configuration conf = new Configuration();
+		FileSystem fs = FileSystem.get(conf);
+		Path outputPath = new Path(output);
+		if(fs.exists(outputPath)) {
+			fs.delete(outputPath, true);
+		}
 
 		Job job = Job.getInstance(conf, "statistic-ip-into-db");
 		job.setJarByClass(IpMR.class);
@@ -71,6 +85,7 @@ public class IpMR extends Configured implements Tool {
 
 	@Override
 	public int run(String[] arg0) throws Exception {
-		return submitJob(arg0);
+		//return submitJob(arg0);
+		return submitJobWithDefinedMysqlOutput(arg0);
 	}
 }

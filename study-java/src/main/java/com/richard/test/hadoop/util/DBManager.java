@@ -18,32 +18,33 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 public class DBManager {
 
 	private static Logger logger = Logger.getLogger(DBManager.class);
-	private static DBManager dbManager = new DBManager();
+	public static DBManager dbManager;
 	private static ComboPooledDataSource cpds = new ComboPooledDataSource("Hadoop-integrated");
 
 	private DBManager() {
 
 	}
 
-	public static DBManager getInstance() {
-		return dbManager;
-	}
-
-	static {
-		cpds.setJdbcUrl(ConfigurationUtil.getInstance().getDbUrl());
-		try {
-			cpds.setDriverClass(ConfigurationUtil.getInstance().getDbDriver());
-		} catch (PropertyVetoException e) {
-			logger.error(e, e);
+	public synchronized static DBManager getInstance() {
+		if(dbManager == null) {
+			dbManager = new DBManager();
+			ConfigurationUtil configurationUtil = ConfigurationUtil.getInstance();
+			cpds.setJdbcUrl(configurationUtil.getDbUrl());
+			try {
+				cpds.setDriverClass(configurationUtil.getDbDriver());
+			} catch (PropertyVetoException e) {
+				logger.error(e, e);
+			}
+			cpds.setUser(configurationUtil.getDbUser());
+			cpds.setPassword(configurationUtil.getDbPasswd());
+			cpds.setMaxPoolSize(Integer.valueOf(configurationUtil.getDbMaxPoolSize()));
+			cpds.setMinPoolSize(Integer.valueOf(configurationUtil.getDbMinPoolSize()));
+			cpds.setAcquireIncrement(Integer.valueOf(configurationUtil.getDbAcquireIncrement()));
+			cpds.setInitialPoolSize(Integer.valueOf(configurationUtil.getDbInitialPoolSize()));
+			cpds.setMaxIdleTime(Integer.valueOf(configurationUtil.getDbMaxIdleTime()));
+			cpds.setMaxStatements(50);
 		}
-		cpds.setUser(ConfigurationUtil.getInstance().getDbUser());
-		cpds.setPassword(ConfigurationUtil.getInstance().getDbPasswd());
-		cpds.setMaxPoolSize(Integer.valueOf(ConfigurationUtil.getInstance().getDbMaxPoolSize()));
-		cpds.setMinPoolSize(Integer.valueOf(ConfigurationUtil.getInstance().getDbMinPoolSize()));
-		cpds.setAcquireIncrement(Integer.valueOf(ConfigurationUtil.getInstance().getDbAcquireIncrement()));
-		cpds.setInitialPoolSize(Integer.valueOf(ConfigurationUtil.getInstance().getDbInitialPoolSize()));
-		cpds.setMaxIdleTime(Integer.valueOf(ConfigurationUtil.getInstance().getDbMaxIdleTime()));
-		cpds.setMaxStatements(50);
+		return dbManager;
 	}
 
 	public Connection getConnection() {
