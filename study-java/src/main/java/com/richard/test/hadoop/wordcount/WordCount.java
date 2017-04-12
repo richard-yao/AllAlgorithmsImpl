@@ -15,6 +15,7 @@ import com.richard.test.hadoop.kpi.browser.BrowserMR;
 import com.richard.test.hadoop.kpi.ip.IpMR;
 import com.richard.test.hadoop.util.BaseDriver;
 import com.richard.test.hadoop.util.JobInitModel;
+import com.richard.test.hadoop.util.WriteFileToHdfs;
 
 /**
 * @author RichardYao richardyao@tvunetworks.com
@@ -29,6 +30,7 @@ public class WordCount {
 		}
 		IpMR ipMR = new IpMR();
 		ipMR.submitJob(args);
+		WriteFileToHdfs.mainExecute(args);
 		//ipMR.submitJobWithDefinedMysqlOutput(args);
 		//wordcountMR(args);
 		//wordcountJar(args);
