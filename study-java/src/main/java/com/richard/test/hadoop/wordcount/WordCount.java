@@ -10,6 +10,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
+import org.apache.hadoop.util.ToolRunner;
 
 import com.richard.test.hadoop.kpi.browser.BrowserMR;
 import com.richard.test.hadoop.kpi.ip.IpMR;
@@ -24,13 +25,13 @@ import com.richard.test.hadoop.util.WriteFileToHdfs;
 public class WordCount {
 	
 	public static void main(String[] args) throws Exception {
-		if(args.length > 0) {
+		WriteFileToHdfs.mainExecute(args);
+		if(args.length == 2) {
 			BrowserMR mr = new BrowserMR();
 			mr.submitJob(args);
 		}
-		IpMR ipMR = new IpMR();
-		ipMR.submitJob(args);
-		WriteFileToHdfs.mainExecute(args);
+		int result = ToolRunner.run(new IpMR(), args);
+		System.exit(result);
 		//ipMR.submitJobWithDefinedMysqlOutput(args);
 		//wordcountMR(args);
 		//wordcountJar(args);
