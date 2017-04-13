@@ -18,6 +18,7 @@ import com.richard.test.hadoop.sort.SortNumberFile;
 import com.richard.test.hadoop.util.BaseDriver;
 import com.richard.test.hadoop.util.JobInitModel;
 import com.richard.test.hadoop.util.WriteFileToHdfs;
+import com.richard.test.hadoop.wordcount.chain.WordCountChain;
 
 /**
 * @author RichardYao richardyao@tvunetworks.com
@@ -32,7 +33,8 @@ public class WordCount {
 			mr.submitJob(args);
 		}
 		int result = ToolRunner.run(new IpMR(), args);*/
-		int result = ToolRunner.run(new SortNumberFile(), args);
+		//int result = ToolRunner.run(new SortNumberFile(), args);
+		int result = ToolRunner.run(new WordCountChain(), args);
 		System.exit(result);
 		//ipMR.submitJobWithDefinedMysqlOutput(args);
 		//wordcountMR(args);
