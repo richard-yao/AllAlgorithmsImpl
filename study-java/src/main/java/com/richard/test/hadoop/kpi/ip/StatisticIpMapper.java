@@ -18,11 +18,22 @@ public class StatisticIpMapper extends Mapper<LongWritable, Text, Text, IntWrita
 	private IntWritable addOne = new IntWritable(1);
 	private Text browser = new Text();
 	
+	@Override
+	public void setup(Context context) {
+		
+	}
+	
+	@Override
 	public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
 		Kpi kpi = Kpi.parse(value.toString());
 		if(kpi.getIs_validate()) {
 			browser.set(kpi.getRemote_addr());
 			context.write(browser, addOne);
 		}
+	}
+	
+	@Override
+	public void cleanup(Context context) {
+		
 	}
 }

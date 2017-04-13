@@ -56,8 +56,8 @@ public class IpMR extends Configured implements Tool {
 	 */
 	public int submitJobWithDefinedMysqlOutput(String[] args) throws Exception {
 		Configuration conf = IpMR.configuration;
-		/*conf.setInt("mapreduce.tasktracker.map.tasks.maximum", 20);
-		conf.setInt("mapreduce.tasktracker.reduce.tasks.maximum", 50);*/
+		conf.setInt("mapreduce.tasktracker.map.tasks.maximum", 20);
+		conf.setInt("mapreduce.tasktracker.reduce.tasks.maximum", 50);
 		
 		String input = "hdfs://hadoop-master:9000/user/hadoop/accesslog/*";
 		String output = "hdfs://hadoop-master:9000/user/hadoop/accesslog/output";
@@ -77,6 +77,7 @@ public class IpMR extends Configured implements Tool {
 		job.setOutputValueClass(IntWritable.class);
 		job.setInputFormatClass(TextInputFormat.class);
 		job.setOutputFormatClass(MysqlOutputFormat.class);
+		
 
 		FileInputFormat.setInputPaths(job, new Path(input));
 		MysqlOutputFormat.setOutputPath(job, new Path(output));

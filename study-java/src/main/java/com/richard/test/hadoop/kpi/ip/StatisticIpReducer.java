@@ -15,11 +15,22 @@ import com.richard.test.hadoop.util.DBOutputWritable;
 */
 public class StatisticIpReducer extends Reducer<Text, IntWritable, DBOutputWritable, NullWritable> {
 
+	@Override
+	public void setup(Context context) {
+		
+	}
+	
+	@Override
 	public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 		int sum = 0;
 		for(IntWritable val:values) {
 			sum += val.get();
 		}
 		context.write(new DBOutputWritable(key.toString(), sum), NullWritable.get());
+	}
+	
+	@Override
+	public void cleanup(Context context) {
+		
 	}
 }
