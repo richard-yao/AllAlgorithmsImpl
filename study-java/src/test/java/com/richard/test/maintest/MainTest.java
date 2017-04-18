@@ -6,8 +6,29 @@ package com.richard.test.maintest;
 public class MainTest {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		System.out.println(System.currentTimeMillis());
+		boolean flag = false;
+		try {
+			int i = 0;
+			while (i < 50) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				i++;
+				if (i == 10) {
+					flag = true;
+					System.out.println(flag);
+					return;
+				}
+			} 
+		} finally {
+			flag = false;
+			System.out.println(flag);
+		}
+		System.out.println(false);
+		System.out.println(System.currentTimeMillis());
 	}
 
 }

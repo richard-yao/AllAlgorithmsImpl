@@ -14,7 +14,8 @@ public class SimpleApp {
 	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		String logFile = "hdfs://hadoop-master:9000/user/hadoop/input/test.log";
-		SparkConf conf = new SparkConf().setAppName("Simple-application");
+		String masterAddress = "spark://hadoop-master:7077";
+		SparkConf conf = new SparkConf().setAppName("Simple-application").setMaster(masterAddress);
 		JavaSparkContext sc = new JavaSparkContext(conf);
 		JavaRDD<String> logData = sc.textFile(logFile).cache();
 		
