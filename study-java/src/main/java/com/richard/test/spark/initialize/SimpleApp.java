@@ -1,6 +1,10 @@
 package com.richard.test.spark.initialize;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +16,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.apache.spark.api.java.function.PairFunction;
 import org.apache.spark.api.java.function.VoidFunction;
 import org.apache.spark.storage.StorageLevel;
 import org.apache.spark.util.LongAccumulator;
@@ -25,7 +28,6 @@ import scala.Tuple2;
 */
 public class SimpleApp {
 
-	@SuppressWarnings("resource")
 	public static void main(String[] args) {
 		String logFile, masterAddress;
 		if(args != null && args.length == 2) {
@@ -113,6 +115,7 @@ public class SimpleApp {
 		System.out.println("This text words' number is " + wordNumber + " and myself count value is "+totalWordNumber.value());
 		
 		useMapReduce(logData);
+		useParallelize(sc);
 		sc.stop();
 	}
 	
@@ -125,7 +128,7 @@ public class SimpleApp {
 
 				@Override
 				public Iterator<Tuple2<String, Integer>> call(String line) throws Exception {
-					String[] words = line.split("\t");
+					String[] words = line.split(" ");
 					List<Tuple2<String, Integer>> result = new ArrayList<Tuple2<String, Integer>>();
 					for(int i=0;i<words.length;i++) {
 						Tuple2<String, Integer> temp = new Tuple2<String, Integer>(words[i], 1);
@@ -155,6 +158,11 @@ public class SimpleApp {
 				}
 			});
 			counts.sortByKey();
+			
+			System.out.println("---------------insertKeyNumberTodb() method start time:"+System.currentTimeMillis()+"---------------");
+			insertKeyNumberToDb(counts);
+			System.out.println("---------------insertKeyNumberTodb() method end time:"+System.currentTimeMillis()+"---------------");
+			
 			List<Tuple2<String, Integer>> collectResult = counts.collect();
 			System.out.println("---------------Use collec() method start---------------");
 			for(int i=0;i<collectResult.size();i++) {
@@ -169,5 +177,66 @@ public class SimpleApp {
 			System.out.println("---------------Use collectAsMap() method end---------------");
 		}
 	}
+	
+	public static void useParallelize(JavaSparkContext sc) {
+		JavaRDD<Integer> dataSet = sc.parallelize(Arrays.asList(new Integer[] {1,2,3,4,5}));
+		final LongAccumulator accumulator = sc.sc().longAccumulator("CountNumber");
+		dataSet.foreach(new VoidFunction<Integer>() {
 
+			private static final long serialVersionUID = 7241318845305003358L;
+
+			@Override
+			public void call(Integer value) throws Exception {
+				accumulator.add(value);;
+			}
+		});
+		System.out.println("Use parallelize function to convert a list to RDD and count the sum: " + accumulator.value());
+		
+		final LongAccumulator countNumber = sc.sc().longAccumulator("CountNumberWithPartition");
+		dataSet.foreachPartition(new VoidFunction<Iterator<Integer>>() {
+
+			private static final long serialVersionUID = -2417711780351402266L;
+
+			@Override
+			public void call(Iterator<Integer> partitionList) throws Exception {
+				while(partitionList.hasNext()) {
+					countNumber.add(partitionList.next());
+				}
+			}
+		});
+		System.out.println("Use foreachPartition to count the sum: " + countNumber.value());
+	}
+	
+	public static void insertKeyNumberToDb(JavaPairRDD<String, Integer> counts) {
+		counts.foreachPartition(new VoidFunction<Iterator<Tuple2<String,Integer>>>() {
+
+			private static final long serialVersionUID = 2638267996836384562L;
+
+			@Override
+			public void call(Iterator<Tuple2<String, Integer>> result) throws Exception {
+				Connection connection = DriverManager.getConnection("jdbc:mysql://10.12.22.78:3306/statistic_data",
+						"root", "tvu1p2ack3");
+				Statement statement = null;
+				try {
+					statement = connection.createStatement();
+					connection.setAutoCommit(false);
+					String sql = "insert into word_count values('{0}', {1}) ";
+					while (result.hasNext()) {
+						Tuple2<String, Integer> temp = result.next();
+						String executeSql = sql;
+						executeSql = executeSql.replace("{0}", temp._1()).replace("{1}", String.valueOf(temp._2()));
+						statement.addBatch(executeSql);
+					}
+					statement.executeBatch();
+					connection.commit();
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					statement.close();
+					connection.close();
+				}
+			}
+		});
+	}
+	
 }
