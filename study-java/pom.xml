@@ -18,6 +18,8 @@
 		<powermock.version>1.6.5</powermock.version>
 		<log4j.version>1.2.16</log4j.version>
 		<spark.version>2.1.0</spark.version>
+		<spark.streaming.version>1.6.3</spark.streaming.version>
+		<scala.version>2.11.8</scala.version>
 	</properties>
 
 	<dependencies>
@@ -123,6 +125,23 @@
 			<version>${spark.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming_2.10</artifactId>
+			<version>${spark.streaming.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.spark</groupId>
+			<artifactId>spark-streaming-kafka_2.10</artifactId>
+			<version>${spark.streaming.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.scala-lang</groupId>
+			<artifactId>scala-library</artifactId>
+			<version>${scala.version}</version>
+			<scope>compile</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>org.mockito</groupId>
@@ -177,9 +196,36 @@
 
 		<plugins>
 			<plugin>
+				<groupId>net.alchim31.maven</groupId>
+				<artifactId>scala-maven-plugin</artifactId>
+				<version>3.2.2</version>
+				<executions>
+					<execution>
+						<id>compile-scala</id>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<phase>compile</phase>
+					</execution>
+					<execution>
+						<id>test-compile</id>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+						<phase>test-compile</phase>
+					</execution>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.3</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -193,7 +239,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.richard.test.spark.initialize.SimpleApp</mainClass>
+							<mainClass>com.richard.test.spark.initialize.SparkStreaming</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
